@@ -2,6 +2,7 @@ beautifulsoup4==4.12.3
 ipykernel==6.29.2
 jq==1.7.0
 langchain[llms]==0.1.17
+langchain-openai==0.1.6
 llama-index==0.10.34
 openai==1.26.0
 pypdf==4.2.0
