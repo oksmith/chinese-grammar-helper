@@ -1,20 +1,30 @@
-# import os
-
 from dotenv import load_dotenv
 
 from langchain.prompts.chat import ChatPromptTemplate
-from langchain_core.runnables import RunnablePassthrough
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.output_parsers import StrOutputParser
-from typing import List
+from typing import Dict, List
 from langchain_core.documents import Document
 
 from src.data import load_data
 from src.vectorstore.database import connect_to_vector_store
 
 load_dotenv()
+
+
+def format_docs(docs: List[Document]) -> str:
+    output = "\n\n".join([doc.page_content for doc in docs])
+    output += "\n\nThe following URLs contain more information and explanation:"
+    output += "\n*".join([doc.metadata["url"] for doc in docs])
+    return output
+
+
+def format_output(result: Dict) -> str:
+    output = f"\nAnswer: {result['answer']}\n\n"
+    output += "For links to more information, see the following:\n* "
+    output += "\n* ".join([d.metadata['url'] for d in result['context']])
+    return output
 
 
 if __name__ == "__main__":
@@ -52,7 +62,7 @@ if __name__ == "__main__":
         "You are an assistant for question-answering tasks. "
         "Use the following pieces of retrieved context to answer "
         "the question. If you don't know the answer, say that you "
-        "don't know. Use three sentences maximum and keep the "
+        "don't know. Use five sentences maximum and keep the "
         "answer concise."
         "\n\n"
         "{context}"
@@ -60,33 +70,25 @@ if __name__ == "__main__":
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", system_prompt),
-            ("human", "{question}"),
+            ("human", "{input}"),
         ]
     )
 
     question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)    
+    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
+    # rag_chain = (
+    #     {"context": retriever | format_docs, "question": RunnablePassthrough()}
+    #     | prompt
+    #     | llm
+    #     | StrOutputParser()
+    # )
 
-    # def format_docs(docs: List[Document]) -> str:
-    #     output = "\n\n".join([doc.page_content for doc in docs])
-    #     output += "\n\nThe following URLs contain more information and explanation:"
-    #     output += "\n*".join([doc.metadata["url"] for doc in docs])
-    #     return output
-
-    def format_docs(docs: List[Document]) -> str:
-        return "\n\n".join(doc.page_content for doc in docs)
-
-    rag_chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | StrOutputParser()
-    )
-
-    while (question := input("Ask a question about Chinese grammar (q to quit): ") != "q"):
+    while (question := input("Ask a question about Chinese grammar (q to quit): ")) != "q":
         # example: How should I use 竟然?
-        result = rag_chain.invoke(question)
-        print(result)
+        # example: How should I use 刚 and 了 in the same sentence?
+        # result = rag_chain.invoke(question)
+        result = rag_chain.invoke({"input": question})
+        print(format_output(result))
 
     print("Exiting program.")
