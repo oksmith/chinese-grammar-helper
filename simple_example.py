@@ -65,6 +65,7 @@ human_template = "{text}"
 chat_prompt = ChatPromptTemplate.from_messages([
     ("system", system_template),
     ("system", "Make sure you reply in English!"),  # without this additional system prompt, it initially replied in Cbinese
+    ("system", "Do not reply in Chinese."),  # without this additional system prompt, it initially replied in Cbinese
     ("human", human_template)
 ])
 
@@ -90,11 +91,22 @@ messages = chat_prompt.format_messages(
 # steps, answer = parsed 
 # print(answer)
 
-chain = chat_prompt | chat_model | OutputParser()
+# chain = chat_prompt | chat_model | OutputParser()
 
 # result = chain.invoke({"input_language": "Chinese", "output_language": "English", "text": "分析是什么？"})
 # print(result)
-# # [
-# #     'Analysis is the process of examining something in detail in order to understand its nature, structure, or functioning', 
-# #     'It involves breaking down a complex topic into smaller parts and examining how they relate to each other.'
-# # ]
+# [
+#     'Analysis is the process of examining something in detail in order to understand its nature, structure, or functioning', 
+#     'It involves breaking down a complex topic into smaller parts and examining how they relate to each other.'
+# ]
+
+chat_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant who notices unnatural sounding Chinese sentences and corrects them."),
+    ("system", "Reply in Chinese correcting the sentence."),
+    ("system", "Explain why it is not correct."),
+    ("human", human_template)
+])
+chain = chat_prompt | chat_model | OutputParser()
+# result = chain.invoke({"input_language": "Chinese", "output_language": "English", "text": "Correct my grammar: 我学习中文已经五年"})
+# print(result)
+# ['我已经学习中文五年了。\n\n"已经" should be placed before the verb "学习" to indicate the duration of the action.']
