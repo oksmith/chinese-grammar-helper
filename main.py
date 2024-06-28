@@ -1,11 +1,11 @@
-from dotenv import load_dotenv
+from typing import Dict, List
 
-from langchain.prompts.chat import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from typing import Dict, List
+from langchain.prompts.chat import ChatPromptTemplate
 from langchain_core.documents import Document
+from langchain_openai import ChatOpenAI
 
 from src.data import load_data
 from src.vectorstore.database import connect_to_vector_store

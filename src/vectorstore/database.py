@@ -1,11 +1,11 @@
-from dotenv import load_dotenv
 import os
 
-from langchain_openai import OpenAIEmbeddings
+from dotenv import load_dotenv
 from langchain_astradb.vectorstores import AstraDBVectorStore
-
+from langchain_openai import OpenAIEmbeddings
 
 load_dotenv()
+
 
 def connect_to_vector_store() -> AstraDBVectorStore:
     # intialise embeddings

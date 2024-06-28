@@ -1,10 +1,8 @@
 import json
-import os 
-
+import os
 from typing import List
 
 from dotenv import load_dotenv
-
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_core.documents import Document
 
@@ -14,25 +12,6 @@ PDF_PATH = os.path.join("data", "chinese_grammar_textbook", "ModernMandarinChine
 WEB_PATH = os.path.join("data", "chinese_grammar_data")
 METADATA_PATH = os.path.join("data", "metadata.json")
 
-# def get_index(data, index_name):
-#     index = None
-#     if not os.path.exists(index_name):
-#         print(f"building index {index_name}")
-#         index = VectorStoreIndex.from_documents(data, show_progress=True)
-#         index.storage_context.persist(persist_dir=index_name)
-#     else:
-#         index = load_index_from_storage(StorageContext.from_defaults(persist_dir=index_name))
-
-# def get_pdf_engine(path: str, name: str) -> VectorStoreIndex:
-#     pdf = PDFReader().load_data(path)
-#     index = get_index(pdf, name)
-#     engine = index.as_query_engine()
-#     return engine
-
-# llama_cloud_api_key = os.getenv("LLAMA_CLOUD_API_KEY")
-# api_endpoint = os.getenv("ASTRA_DB_API_ENDPOINT")
-# token = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
-# openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # def get_pdf_data(file_path=PDF_PATH):
 #     # configure global settings for Llamaindex
