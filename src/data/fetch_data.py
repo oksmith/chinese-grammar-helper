@@ -83,12 +83,21 @@ def get_relevant_content(url: str) -> list[str]:
     return paragraph_texts, soup
 
 
-def save_full_html(text, filepath, save_dir="data/chinese_grammar_html"):
-    if not os.path.exists(f"{save_dir}/{filepath}"):
-        os.makedirs(f"{save_dir}/{filepath}")
-    with open(f"{save_dir}/{filepath}/webpage.html", 'w') as f:
+def save_full_html(text, filename, save_dir="data/chinese_grammar_html"):
+    if not os.path.exists(f"{save_dir}"):
+        os.makedirs(f"{save_dir}")
+
+    print(f"Saving {filename}.html...")
+    with open(f"{save_dir}/{filename}.html", 'w') as f:
         f.write(text)
 
+def save_relevant_content(text, filename, save_dir="data/chinese_grammar_data"):
+    if not os.path.exists(f"{save_dir}"):
+        os.makedirs(f"{save_dir}")
+
+    print(f"Saving {filename}.txt...")
+    with open(f"{save_dir}/{filename}.txt", 'w') as f:
+        f.writelines(text)
 
 if __name__ == "__main__":
     data = []
@@ -98,21 +107,25 @@ if __name__ == "__main__":
 
     n = len(hrefs)
     for i, (k, v) in enumerate(hrefs.items()):
+        # # TODO: remove this line
+        # if i >= 10:
+        #     continue
+
         print(f"{i+1}/{n} Fetching {k}...")
         paragraph_texts, soup = get_relevant_content(v)
         data.append({
             "url": v,
             "name": k,
-            "data": paragraph_texts,
         })
-        save_full_html(str(soup), v)
-
-    print(f"Saving data to file...")
-    save_dir = "data/chinese_grammar_data"
-    for l in data:
-        key = l['url'].split("/")[-1]
-        filename = l['name'].split("§")[0].lower().strip().replace(" ", "_").replace("/", "")
-        if not os.path.exists(f"{save_dir}/{key}"):
-            os.makedirs(f"{save_dir}/{key}")
-        with open(f"{save_dir}/{key}/{filename}.json", 'w') as f:
-            json.dump(''.join(l['data']), f)
+        save_full_html(str(soup), v.split("/")[-1])
+        save_relevant_content(paragraph_texts, v.split("/")[-1])
+    
+    metadata = {
+        x['url'].split("/")[-1]: {
+            "url": BASE_URL + x['url'],
+            "title": x['name']
+        }
+        for x in data
+    }
+    with open("data/metadata.json", 'w') as f:
+        json.dump(metadata, f)
