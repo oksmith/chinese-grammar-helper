@@ -1,4 +1,4 @@
-# zhongwen-llm
+# chinese-grammar-helper
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
