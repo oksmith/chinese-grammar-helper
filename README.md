@@ -2,8 +2,11 @@
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
+TODO: refactor src
 TODO: add a demonstration gif or something
 TODO: improve web scraping functionality when fetching data. More data sources to add to the vector store?
+TODO: turn main.py into a proper command line tool
+TODO: proper logging
 
 ## Setting up API keys
 

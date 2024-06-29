@@ -3,6 +3,8 @@ import os
 import requests
 import time
 
+from typing import Dict, List, Optional
+
 from bs4 import BeautifulSoup
 
 
@@ -12,6 +14,9 @@ BASE_URL = "https://resources.allsetlearning.com"
 
 
 def get_content(url: str) -> BeautifulSoup:
+    """
+    Request web page content and parse into a BeautifulSoup object.
+    """
     try:
         response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
         if response.status_code != 200:
@@ -26,15 +31,21 @@ def get_content(url: str) -> BeautifulSoup:
     return BeautifulSoup(content, 'html.parser')
 
 
-def get_all_urls(url) -> list[str]:
-    soup = get_content(url)
+def get_all_grammar_urls() -> Dict[str, str]:
+    """
+    Use the base URL to fetch all hrefs to child web pages, then select
+    those that are grammar URLs.
+    """
+    soup = get_content(f"{BASE_URL}/chinese/grammar/")
 
     all_hrefs = [a.get('href') for a in soup.find_all('a')]
     grammar_urls = list(set([
-        BASE_URL + href for href in all_hrefs if "/chinese/grammar/" in str(href) and "grammar_points" in str(href)
+        BASE_URL + href for href in all_hrefs
+        if "/chinese/grammar/" in str(href)
+        and "grammar_points" in str(href)
     ]))
 
-    hrefs = {}
+    grammar_hrefs = {}
     for url in grammar_urls:
         soup = get_content(url)
         tables = soup.find_all('table', attrs={'class':'wikitable'})
@@ -48,19 +59,19 @@ def get_all_urls(url) -> list[str]:
                     continue
                 href = cols[0].find("a").get('href')
                 key = cols[0].text + " § " + cols[1].text
-                hrefs[key] = href
+                if "/gramwiki/" not in href:
+                    # exclude /gramwiki/ urls as the code struggles to fetch those
+                    # TODO: figure out how to get that data too
+                    grammar_hrefs[key] = href
 
-    # filter out /gramwiki/ urls as the code struggles to fetch those
-    # TODO: figure out how to get that data too
-    hrefs = {
-        k: v for k, v in hrefs.items()
-        if "/gramwiki/" not in v
-    }
-
-    return hrefs
+    return grammar_hrefs
 
 
-def get_relevant_content(url: str) -> list[str]:
+def parse_relevant_content(url: str) -> List[str]:
+    """
+    Parse out only the text which is relevant to Chinese grammar education.
+    Ignore other blocks e.g. advertisements, copyright blocks.
+    """
     soup = get_content(BASE_URL + url)
 
     # Find all <p> tags, that don't correspond to a copyright block
@@ -83,7 +94,10 @@ def get_relevant_content(url: str) -> list[str]:
     return paragraph_texts, soup
 
 
-def save_full_html(text, filename, save_dir="data/chinese_grammar_html"):
+def save_full_html(text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_html") -> None:
+    """
+    Save full html file for debugging.
+    """
     if not os.path.exists(f"{save_dir}"):
         os.makedirs(f"{save_dir}")
 
@@ -91,7 +105,10 @@ def save_full_html(text, filename, save_dir="data/chinese_grammar_html"):
     with open(f"{save_dir}/{filename}.html", 'w') as f:
         f.write(text)
 
-def save_relevant_content(text, filename, save_dir="data/chinese_grammar_data"):
+def save_relevant_content(text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_data") -> None:
+    """
+    Save parsed text file for our RAG application's retrieval.
+    """
     if not os.path.exists(f"{save_dir}"):
         os.makedirs(f"{save_dir}")
 
@@ -99,33 +116,25 @@ def save_relevant_content(text, filename, save_dir="data/chinese_grammar_data"):
     with open(f"{save_dir}/{filename}.txt", 'w') as f:
         f.writelines(text)
 
-if __name__ == "__main__":
-    data = []
 
-    hrefs = get_all_urls(URL)
+if __name__ == "__main__":
+    metadata = {}
+
+    grammar_urls = get_all_grammar_urls()
     time.sleep(0.2)
 
-    n = len(hrefs)
-    for i, (k, v) in enumerate(hrefs.items()):
-        # # TODO: remove this line
-        # if i >= 10:
-        #     continue
-
-        print(f"{i+1}/{n} Fetching {k}...")
-        paragraph_texts, soup = get_relevant_content(v)
-        data.append({
-            "url": v,
-            "name": k,
-        })
-        save_full_html(str(soup), v.split("/")[-1])
-        save_relevant_content(paragraph_texts, v.split("/")[-1])
-    
-    metadata = {
-        x['url'].split("/")[-1]: {
-            "url": BASE_URL + x['url'],
-            "title": x['name']
+    n = len(grammar_urls)
+    for i, (title, url) in enumerate(grammar_urls.items()):
+        print(f"{i+1}/{n} Fetching {title}...")
+        paragraph_texts, soup = parse_relevant_content(url)
+        key = url.split("/")[-1]
+        metadata[key] = {
+            "url": BASE_URL + url,
+            "title": title,
         }
-        for x in data
-    }
+        save_full_html(str(soup), key)
+        save_relevant_content(paragraph_texts, key)
+    
+    # Save metadata, this will be the 'source' when retrieving
     with open("data/metadata.json", 'w') as f:
         json.dump(metadata, f)
