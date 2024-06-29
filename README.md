@@ -2,8 +2,6 @@
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
-* TODO: turn main.py into a proper command line tool
-* TODO: proper logging with colours
 * TODO: add a demonstration gif or something
 
 ## Example usage
@@ -13,7 +11,9 @@ A GenAI application to explain Chinese grammatical structures and help point me 
 
 Use `chinese-helper` as a command line tool:
 ```
-
+python main.py helper
+python main.py updatedb
+python main.py helper --updatedb
 ```
 
 You may need to ensure the right Python environment is active:

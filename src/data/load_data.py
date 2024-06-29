@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from typing import List
 
 from dotenv import load_dotenv
@@ -8,7 +9,9 @@ from langchain_core.documents import Document
 
 load_dotenv()
 
-PDF_PATH = os.path.join("data", "chinese_grammar_textbook", "ModernMandarinChineseGrammar_Textbook.pdf")
+PDF_PATH = os.path.join(
+    "data", "chinese_grammar_textbook", "ModernMandarinChineseGrammar_Textbook.pdf"
+)
 WEB_PATH = os.path.join("data", "chinese_grammar_data")
 METADATA_PATH = os.path.join("data", "metadata.json")
 
@@ -31,14 +34,28 @@ METADATA_PATH = os.path.join("data", "metadata.json")
 
 #     return nodes
 
-def get_web_data(path: str = WEB_PATH) -> List[Document]:
-    documents = DirectoryLoader(path, glob="**/*.txt", loader_cls=TextLoader, show_progress=True).load()
+
+def get_web_data(path: str = WEB_PATH, logger=sys.stdout) -> List[Document]:
+    if not os.path.exists(path):
+        logger.error(f"Data directory not found at {path}")
+        return []
+
+    documents = DirectoryLoader(
+        path, glob="**/*.txt", loader_cls=TextLoader, show_progress=True
+    ).load()
 
     with open(METADATA_PATH, "r") as f:
         overall_metadata = json.load(f)
-    
+
     documents = [
-        Document(page_content=doc.page_content, metadata={"url": overall_metadata[doc.metadata["source"].split("/")[-1].split(".")[0]]["url"]})
+        Document(
+            page_content=doc.page_content,
+            metadata={
+                "url": overall_metadata[
+                    doc.metadata["source"].split("/")[-1].split(".")[0]
+                ]["url"]
+            },
+        )
         for doc in documents
     ]
     return documents
