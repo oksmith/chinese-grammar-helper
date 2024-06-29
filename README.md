@@ -2,14 +2,15 @@
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
-TODO: move RAG functionality into src, keep main.py simple
-TODO: add a demonstration gif or something
-TODO: turn main.py into a proper command line tool
-TODO: proper logging
+* TODO: add a demonstration gif or something
+* TODO: turn main.py into a proper command line tool
+* TODO: proper logging
 
 ## Tech stack
 
-* 
+* OpenAI `gpt-3.5-turbo-1106` for the LLM
+* OpenAI `text-embedding-ada-002` for the text embeddings
+* DataStax [Astra](https://astra.datastax.com/) database for vector store
 
 ## Setup
 
@@ -27,6 +28,7 @@ Create new vector database with Astra, and put the relevant endpoint and token i
 There are two ways to get data.
 
 #### 1. Scraping website data from allsetlearning
+This is a Chinese grammar wiki I have frequently found to be incredibly useful in my language learning journey.
 ```
 python ./src/data/fetch_data.py
 ```
