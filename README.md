@@ -2,8 +2,6 @@
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
-* TODO: add a demonstration gif or something
-
 ## Example usage
 
 ![demo](./assets/demo.gif)
