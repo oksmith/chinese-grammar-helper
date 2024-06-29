@@ -8,7 +8,8 @@ load_dotenv()
 
 
 def connect_to_vector_store() -> AstraDBVectorStore:
-    # intialise embeddings
+    # TODO: does there exist a better embedding model to use for multilingual
+    # sentences (mostly English with some Mandarin)?
     embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")
     
     # load database endpoint variables
