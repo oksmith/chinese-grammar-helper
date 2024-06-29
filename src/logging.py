@@ -37,4 +37,5 @@ def get_logger():
     ch.setFormatter(CustomFormatter())
 
     logger.addHandler(ch)
+    logger.propagate = False
     return logger

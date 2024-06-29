@@ -28,7 +28,7 @@ def get_content(url: str) -> BeautifulSoup:
         print(e)
         print("continuing...")
 
-    return BeautifulSoup(content, 'html.parser')
+    return BeautifulSoup(content, "html.parser")
 
 
 def get_all_grammar_urls() -> Dict[str, str]:
@@ -38,26 +38,30 @@ def get_all_grammar_urls() -> Dict[str, str]:
     """
     soup = get_content(f"{BASE_URL}/chinese/grammar/")
 
-    all_hrefs = [a.get('href') for a in soup.find_all('a')]
-    grammar_urls = list(set([
-        BASE_URL + href for href in all_hrefs
-        if "/chinese/grammar/" in str(href)
-        and "grammar_points" in str(href)
-    ]))
+    all_hrefs = [a.get("href") for a in soup.find_all("a")]
+    grammar_urls = list(
+        set(
+            [
+                BASE_URL + href
+                for href in all_hrefs
+                if "/chinese/grammar/" in str(href) and "grammar_points" in str(href)
+            ]
+        )
+    )
 
     grammar_hrefs = {}
     for url in grammar_urls:
         soup = get_content(url)
-        tables = soup.find_all('table', attrs={'class':'wikitable'})
+        tables = soup.find_all("table", attrs={"class": "wikitable"})
         for table in tables:
-            table_body = table.find('tbody')
+            table_body = table.find("tbody")
 
-            rows = table_body.find_all('tr')
+            rows = table_body.find_all("tr")
             for row in rows:
-                cols = row.find_all('td')
+                cols = row.find_all("td")
                 if not len(cols):
                     continue
-                href = cols[0].find("a").get('href')
+                href = cols[0].find("a").get("href")
                 key = cols[0].text + " § " + cols[1].text
                 if "/gramwiki/" not in href:
                     # exclude /gramwiki/ urls as the code struggles to fetch those
@@ -80,12 +84,12 @@ def parse_relevant_content(url: str) -> List[str]:
     paragraph_texts = []
     for paragraph in paragraphs:
         paragraph_text = paragraph.get_text()
-        
+
         # Find the next sibling <div> tag if it exists
         next_sibling = paragraph.find_next_sibling()
-        
-        if next_sibling and next_sibling.name == 'div':
-            if next_sibling.get('class', []) not in (['toc'], ['jiegou']):
+
+        if next_sibling and next_sibling.name == "div":
+            if next_sibling.get("class", []) not in (["toc"], ["jiegou"]):
                 div_text = next_sibling.get_text()
                 paragraph_text += div_text
 
@@ -94,7 +98,9 @@ def parse_relevant_content(url: str) -> List[str]:
     return paragraph_texts, soup
 
 
-def save_full_html(text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_html") -> None:
+def save_full_html(
+    text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_html"
+) -> None:
     """
     Save full html file for debugging.
     """
@@ -102,10 +108,13 @@ def save_full_html(text: str, filename: str, save_dir: Optional[str] = "data/chi
         os.makedirs(f"{save_dir}")
 
     print(f"Saving {filename}.html...")
-    with open(f"{save_dir}/{filename}.html", 'w') as f:
+    with open(f"{save_dir}/{filename}.html", "w") as f:
         f.write(text)
 
-def save_relevant_content(text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_data") -> None:
+
+def save_relevant_content(
+    text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_data"
+) -> None:
     """
     Save parsed text file for our RAG application's retrieval.
     """
@@ -113,13 +122,14 @@ def save_relevant_content(text: str, filename: str, save_dir: Optional[str] = "d
         os.makedirs(f"{save_dir}")
 
     print(f"Saving {filename}.txt...")
-    with open(f"{save_dir}/{filename}.txt", 'w') as f:
+    with open(f"{save_dir}/{filename}.txt", "w") as f:
         f.writelines(text)
 
 
 if __name__ == "__main__":
     metadata = {}
 
+    print("Fetching all grammar URLs...")
     grammar_urls = get_all_grammar_urls()
     time.sleep(0.2)
 
@@ -134,7 +144,7 @@ if __name__ == "__main__":
         }
         save_full_html(str(soup), key)
         save_relevant_content(paragraph_texts, key)
-    
+
     # Save metadata, this will be the 'source' when retrieving
-    with open("data/metadata.json", 'w') as f:
+    with open("data/metadata.json", "w") as f:
         json.dump(metadata, f)

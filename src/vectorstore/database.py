@@ -9,7 +9,6 @@ from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 
 from src.data import load_data
-from src.logging import get_logger
 
 load_dotenv()
 
@@ -63,7 +62,6 @@ def load_documents_and_check(
     Load vector store, add documents and return vector store.
     """
     astra_db_store = connect_to_vector_store()
-    logger = get_logger()
     logger.debug(f"LENGTH OF DOCUMENTS: {len(documents)}")
     logger.debug(f"Example document: {documents[5]}\n\n")
 
