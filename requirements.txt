@@ -1,5 +1,6 @@
 astrapy==1.1.0
 beautifulsoup4==4.12.3
+click==8.1.7
 ipykernel==6.29.2
 langchain-astradb==0.2.0
 langchain-community==0.0.37

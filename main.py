@@ -1,10 +1,14 @@
+import click
+
 from src.data import load_data
+from src.logging import get_logger
 from src.rag import rag
 from src.vectorstore.database import connect_to_vector_store, load_documents_and_check
 
 
 if __name__ == "__main__":
     astra_db_store = connect_to_vector_store()
+    logger = get_logger()
     
     recreate = input("Recreate vector database? (y/N) ").lower() in ["y", "yes"]
     if recreate:
@@ -26,6 +30,8 @@ if __name__ == "__main__":
         # example: How should I use 刚 and 了 in the same sentence?
         # result = rag_chain.invoke(question)
         result = rag_chain.invoke({"input": question})
+        
+        # Use stdout without logger for the agent output
         print(rag.format_output(result))
 
-    print("Exiting program.")
+    logger.info("Exiting program.")

@@ -11,6 +11,17 @@ A GenAI application to explain Chinese grammatical structures and help point me 
 * TODO: insert gif here
 * TODO: insert example commands here
 
+Use `chinese-helper` as a command line tool:
+```
+
+```
+
+You may need to ensure the right Python environment is active:
+```
+$ . .venv/bin/activate
+(venv) $
+```
+
 ## Tech stack
 
 * OpenAI `gpt-3.5-turbo-1106` for the LLM
@@ -50,3 +61,4 @@ curl https://www.kinezika.com/pdf/ModernMandarinChineseGrammar_Textbook.pdf -o d
 * Extend the application so that when I type in a subtly incorrect sentence, the model is able to notice
   my mistake, correct it to something more natural, and link to the relevant grammar URL to help me
   improve
+* Package this up in a way that doesn't require a Python virtual environment etc.

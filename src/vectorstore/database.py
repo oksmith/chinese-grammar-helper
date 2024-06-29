@@ -7,6 +7,8 @@ from langchain_astradb.vectorstores import AstraDBVectorStore
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 
+from src.logging import get_logger
+
 load_dotenv()
 
 
@@ -35,14 +37,15 @@ def load_documents_and_check(documents: List[Document]) -> AstraDBVectorStore:
     Load vector store, add documents and return vector store.
     """
     astra_db_store = connect_to_vector_store()
-    print(f"LENGTH OF DOCUMENTS: {len(documents)}")
-    print(f"Example document: {documents[5]}\n\n")
+    logger = get_logger()
+    logger.info(f"LENGTH OF DOCUMENTS: {len(documents)}")
+    logger.info(f"Example document: {documents[5]}\n\n")
 
     astra_db_store.add_documents(documents)
 
     # verify a search
     results = astra_db_store.similarity_search("了", k=3)
     for result in results:
-        print(f"* {result.page_content} {result.metadata} \n\n")
+        logger.info(f"* {result.page_content} {result.metadata} \n\n")
 
     return astra_db_store
