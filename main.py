@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import click
 
 from src.logging import get_logger
@@ -35,11 +36,14 @@ def helper(updatedb):
             astra_db_store = database.update_vector_store(astra_db_store, logger=logger)
 
     logger.info("Loading RAG agent...")
-    rag_chain = rag.get_agent(astra_db_store, logger=logger)
+    rag_chain = rag.get_agent(astra_db_store)
 
     while (
         question := input("Ask a question about Chinese grammar (q to quit): ")
     ) != "q":
+        if question.strip("\n").strip(" ").strip("\t") == "":
+            continue
+
         # example: How should I use 竟然?
         # example: How should I use 刚 and 了 in the same sentence?
         # result = rag_chain.invoke(question)

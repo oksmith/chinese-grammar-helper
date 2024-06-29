@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+PYTHON_PATH=$(which python)
+if [[ -z "$PYTHON_PATH" ]] || [[ "$PYTHON_PATH" != *"chinese-grammar-helper/.venv/bin/python" ]]; then
+    echo "Activate your Python virtual environment using the following command:"
+    echo ". ./.venv/bin/activate"
+    exit 1
+fi
+
+# Run python script
+if [ "$1" = "updatedb" ]; then
+    python main.py updatedb
+fi
+
+if [ "$1" = "helper" ]; then
+    if [ "$2" = "--updatedb" ]; then
+        python main.py helper --updatedb
+    else
+        python main.py helper
+    fi
+fi
