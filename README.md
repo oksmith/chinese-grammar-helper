@@ -6,6 +6,8 @@ A GenAI application to explain Chinese grammatical structures and help point me 
 
 ![demo](./assets/demo.gif)
 
+The app also provides the top 3 most relevant web pages allowing you to explore certain grammar points in more detail.
+
 The script `grammar` was created to make running this helper easy. For example:
 ```
 ./grammar helper

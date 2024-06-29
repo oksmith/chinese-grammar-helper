@@ -55,7 +55,7 @@ def get_agent(vector_store: AstraDBVectorStore) -> Runnable:
 
 def format_docs(docs: List[Document]) -> str:
     output = "\n\n".join([doc.page_content for doc in docs])
-    output += "\n\nThe following URLs contain more information and explanation:"
+    output += "\n\nThe following URLs contain more information and explanation (ordered by relevance):"
     output += "\n*".join([doc.metadata["url"] for doc in docs])
     return output
 
