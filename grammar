@@ -19,3 +19,7 @@ if [ "$1" = "helper" ]; then
         python main.py helper
     fi
 fi
+
+if [ "$1" != "helper" ] && [ "$1" != "updatedb" ]; then
+    echo "Invalid command: $1"
+fi

@@ -6,10 +6,15 @@ A GenAI application to explain Chinese grammatical structures and help point me 
 
 ## Example usage
 
-* TODO: insert gif here
-* TODO: insert example commands here
+![demo](./assets/demo.gif)
 
-Use `chinese-helper` as a command line tool:
+The script `grammar` was created to make running this helper easy. For example:
+```
+./grammar helper
+./grammar updatedb
+```
+
+You can also call `main.py` directly if you prefer:
 ```
 python main.py helper
 python main.py updatedb
@@ -46,11 +51,11 @@ There are two ways to get data.
 #### 1. Scraping website data from allsetlearning
 This is a Chinese grammar wiki I have frequently found to be incredibly useful in my language learning journey.
 ```
-python ./src/data/fetch_data.py
+python ./src/data/scrape_data.py
 ```
 
 #### 2. Chinese grammar PDF download
-This dataset is currently not used in the project but it could be extended to include it in the future.
+This dataset is currently not used in the project but I plan to extend the vector store to include it in the future.
 ```
 curl https://www.kinezika.com/pdf/ModernMandarinChineseGrammar_Textbook.pdf -o data/chinese_grammar_textbook/ModernMandarinChineseGrammar_Textbook.pdf
 ```
