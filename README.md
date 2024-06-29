@@ -2,9 +2,14 @@
 
 A GenAI application to explain Chinese grammatical structures and help point me to relevant pages to understand my Chinese mistakes and uncertainties.
 
-* TODO: add a demonstration gif or something
 * TODO: turn main.py into a proper command line tool
-* TODO: proper logging
+* TODO: proper logging with colours
+* TODO: add a demonstration gif or something
+
+## Example usage
+
+* TODO: insert gif here
+* TODO: insert example commands here
 
 ## Tech stack
 
