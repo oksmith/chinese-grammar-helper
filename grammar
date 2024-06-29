@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+# Default message if not in correct Python venv
 PYTHON_PATH=$(which python)
 if [[ -z "$PYTHON_PATH" ]] || [[ "$PYTHON_PATH" != *"chinese-grammar-helper/.venv/bin/python" ]]; then
     echo "Activate your Python virtual environment using the following command:"
     echo ". ./.venv/bin/activate"
+    exit 1
+fi
+
+# Default message if valid commands were not specifed
+if [ "$1" != "helper" ] && [ "$1" != "updatedb" ]; then
+    echo "Invalid command: $1"
     exit 1
 fi
 
@@ -18,8 +25,4 @@ if [ "$1" = "helper" ]; then
     else
         python main.py helper
     fi
-fi
-
-if [ "$1" != "helper" ] && [ "$1" != "updatedb" ]; then
-    echo "Invalid command: $1"
 fi
