@@ -64,4 +64,5 @@ def format_output(result: Dict) -> str:
     output = f"\nAnswer: {result['answer']}\n\n"
     output += "For links to more information, see the following:\n* "
     output += "\n* ".join([d.metadata["url"] for d in result["context"]])
+    output += "\n"
     return output
