@@ -21,17 +21,13 @@ python main.py updatedb
 python main.py helper --updatedb
 ```
 
-You may need to ensure the right Python environment is active:
-```
-$ . .venv/bin/activate
-(venv) $
-```
+You may need to ensure the right Python environment is active. This project uses Poetry to manage the virtual environment. Just run `poetry shell` to enter the virtual environment!
 
 ## Tech stack
 
 * OpenAI `gpt-3.5-turbo-1106` for the LLM
 * OpenAI `text-embedding-ada-002` for the text embeddings
-* DataStax [Astra](https://astra.datastax.com/) database for vector store
+* [QDrant](https://qdrant.tech/) for the vector store
 
 ## Setup
 
@@ -70,7 +66,6 @@ curl https://www.kinezika.com/pdf/ModernMandarinChineseGrammar_Textbook.pdf -o d
 
 ## Future improvements
 
-* Use an easier vector database. For example, QDrant.
 * Improve web scraping functionality when fetching data. More data sources to add to the vector store?
 * Extend the application so that when I type in a subtly incorrect sentence, the model is able to notice
   my mistake, correct it to something more natural, and link to the relevant grammar URL to help me
