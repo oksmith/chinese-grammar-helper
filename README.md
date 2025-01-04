@@ -35,6 +35,14 @@ $ . .venv/bin/activate
 
 ## Setup
 
+1. Clone the repo, and make sure `poetry` is installed and Python 3.12 available.
+2. Use the right version of Python and install the package dependencies into a virtual environment:
+```
+poetry env use python3.12
+poetry install
+```
+3. Activate the virtual environment in a shell `poetry shell`. Now you can run all of the scripts in this repo with the correct virtual environment.
+
 ### Setting up API keys
 
 Create an account and an API key here: https://platform.openai.com/api-keys
@@ -62,8 +70,9 @@ curl https://www.kinezika.com/pdf/ModernMandarinChineseGrammar_Textbook.pdf -o d
 
 ## Future improvements
 
+* Use an easier vector database. For example, QDrant.
 * Improve web scraping functionality when fetching data. More data sources to add to the vector store?
 * Extend the application so that when I type in a subtly incorrect sentence, the model is able to notice
   my mistake, correct it to something more natural, and link to the relevant grammar URL to help me
   improve
-* Package this up in a way that doesn't require a Python virtual environment etc.
+* Package it up and release it to the wild
