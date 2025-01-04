@@ -14,8 +14,7 @@ def cli():
 @click.command()
 def updatedb():
     logger = get_logger()
-    astra_db_store = database.connect_to_vector_store()
-    database.update_vector_store(astra_db_store, logger=logger)
+    database.create_vector_store(logger)
 
 
 @click.command()
@@ -29,11 +28,11 @@ def helper(updatedb):
     logger = get_logger()
 
     logger.info("Loading embeddings, connecting to vector store...")
-    astra_db_store = database.connect_to_vector_store()
+    astra_db_store = database.connect_to_vector_store(logger)
     if updatedb:
         recreate = input("Recreate vector database? (y/N) ").lower() in ["y", "yes"]
         if recreate:
-            astra_db_store = database.update_vector_store(astra_db_store, logger=logger)
+            astra_db_store = database.create_vector_store(logger=logger)
 
     logger.info("Loading RAG agent...")
     rag_chain = rag.get_agent(astra_db_store)
