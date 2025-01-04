@@ -2,18 +2,18 @@ from typing import Dict, List
 
 from dotenv import load_dotenv
 
-from langchain_astradb.vectorstores import AstraDBVectorStore
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.runnables.base import Runnable
 from langchain_core.documents import Document
 from langchain.prompts.chat import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_qdrant import QdrantVectorStore
 
 load_dotenv()
 
 
-def get_agent(vector_store: AstraDBVectorStore) -> Runnable:
+def get_agent(vector_store: QdrantVectorStore) -> Runnable:
     """
     Create the main RAG agent for answering questions about Chinese
     grammar.

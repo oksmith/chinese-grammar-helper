@@ -71,7 +71,7 @@ def get_all_grammar_urls() -> Dict[str, str]:
     return grammar_hrefs
 
 
-def parse_relevant_content(url: str) -> List[str]:
+def parse_relevant_content(url: str) -> tuple[List[str], BeautifulSoup]:
     """
     Parse out only the text which is relevant to Chinese grammar education.
     Ignore other blocks e.g. advertisements, copyright blocks.
@@ -113,7 +113,9 @@ def save_full_html(
 
 
 def save_relevant_content(
-    text: str, filename: str, save_dir: Optional[str] = "data/chinese_grammar_data"
+    text: List[str],
+    filename: str,
+    save_dir: Optional[str] = "data/chinese_grammar_data",
 ) -> None:
     """
     Save parsed text file for our RAG application's retrieval.

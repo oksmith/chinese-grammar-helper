@@ -1,6 +1,6 @@
 import json
 import os
-import sys
+from logging import Logger
 from typing import List
 
 from dotenv import load_dotenv
@@ -35,7 +35,8 @@ METADATA_PATH = os.path.join("data", "metadata.json")
 #     return nodes
 
 
-def get_web_data(path: str = WEB_PATH, logger=sys.stdout) -> List[Document]:
+def get_web_data(path: str, logger: Logger) -> List[Document]:
+    path = path or WEB_PATH
     if not os.path.exists(path):
         logger.error(f"Data directory not found at {path}")
         return []
